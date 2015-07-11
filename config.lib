@@ -30,7 +30,7 @@ set_default() {
 	lipo=""
 	awk="awk"
 	os="DETECT"
-	endian="little"
+	endian="LE"
 	cpu_type="DETECT"
 	config_log="config.log"
 	prefix_dir="/usr/local"
@@ -2608,10 +2608,10 @@ detect_library() {
 	log 2 "detecting $2"
 
 	if [ "$1" = "1" ] || [ "$1" = "" ] || [ "$1" = "2" ]; then
-		eval "$2=`ls -1 /usr/include/$4*.h 2>/dev/null | egrep \"\/$5\$\"`"
+                eval "$2=`ls -1 /usr/lib/emscripten/system/include/$4*.h 2>/dev/null | egrep \"\/$5\$\"`"
 		eval "res=\$$2"
 		if [ -z "$res" ]; then
-			log 2 "  trying /usr/include/$4$5... no"
+			log 2 "  trying /usr/lib/emscripten/system/include/$4$5... no"
 			eval "$2=`ls -1 /usr/local/include/$4*.h 2>/dev/null | egrep \"\/$5\$\"`"
 		fi
 		eval "res=\$$2"
