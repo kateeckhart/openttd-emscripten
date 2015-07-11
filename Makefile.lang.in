@@ -6,16 +6,16 @@
 # See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with OpenTTD. If not, see <http://www.gnu.org/licenses/>.
 
 STRGEN        = !!STRGEN!!
-ENDIAN_CHECK  = !!ENDIAN_CHECK!!
+ENDIAN_CHECK  = !!ENDIAN_CHECK!!.html
 SRC_DIR       = !!SRC_DIR!!
 LANG_DIR      = !!LANG_DIR!!
 BIN_DIR       = !!BIN_DIR!!
 LANGS_SRC     = $(shell ls $(LANG_DIR)/*.txt)
 LANGS         = $(LANGS_SRC:$(LANG_DIR)/%.txt=%.lng)
-CXX_BUILD     = !!CXX_BUILD!!
-CFLAGS_BUILD  = !!CFLAGS_BUILD!!
-CXXFLAGS_BUILD= !!CXXFLAGS_BUILD!!
-LDFLAGS_BUILD = !!LDFLAGS_BUILD!!
+CXX_BUILD     = g++ 
+CFLAGS_BUILD  = 
+CXXFLAGS_BUILD= 
+LDFLAGS_BUILD = 
 STRGEN_FLAGS  = !!STRGEN_FLAGS!!
 STAGE         = !!STAGE!!
 LANG_SUPPRESS = !!LANG_SUPPRESS!!
@@ -84,11 +84,14 @@ $(LANGS): %.lng: $(LANG_DIR)/%.txt $(STRGEN) lang/english.txt
 
 endian_host.h: $(ENDIAN_CHECK)
 	$(E) '$(STAGE) Testing endianness for host'
-	$(Q)./$(ENDIAN_CHECK) > $@
+	$(Q)emrun ./$(ENDIAN_CHECK) > $@
 
-$(ENDIAN_CHECK): $(SRC_DIR)/endian_check.cpp
+$(ENDIAN_CHECK).bc: $(SRC_DIR)/endian_check.cpp
 	$(E) '$(STAGE) Compiling and Linking $@'
-	$(Q)$(CXX_BUILD) $(CFLAGS_BUILD) $(CXXFLAGS_BUILD) $(LDFLAGS_BUILD) $< -o $@
+	$(Q)emcc $< -o $@
+
+$(ENDIAN_CHECK): $(ENDIAN_CHECK).bc
+	emcc $(ENDIAN_CHECK).bc -o $(ENDIAN_CHECK) --emrun
 
 depend:
 

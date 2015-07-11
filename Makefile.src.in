@@ -282,13 +282,16 @@ endif
 
 # The targets to compile the endian-code
 
-endian_target.h: $(ENDIAN_CHECK) $(CONFIG_CACHE_ENDIAN)
-	$(E) '$(STAGE) Testing endianness for target'
-	$(Q)./$(ENDIAN_CHECK) $(ENDIAN_FORCE) > $@
+endian_host.h: $(ENDIAN_CHECK)
+	$(E) '$(STAGE) Testing endianness for host'
+	$(Q)emrun ./$(ENDIAN_CHECK) > $@
 
-$(ENDIAN_CHECK): $(SRC_DIR)/endian_check.cpp
+$(ENDIAN_CHECK).bc: $(SRC_DIR)/endian_check.cpp
 	$(E) '$(STAGE) Compiling and Linking $@'
-	$(Q)$(CXX_BUILD) $(CFLAGS_BUILD) $(CXXFLAGS_BUILD) $(LDFLAGS_BUILD) $< -o $@
+	$(Q)emcc $< -o $@
+
+$(ENDIAN_CHECK): $(ENDIAN_CHECK).bc
+	emcc $(ENDIAN_CHECK).bc -o $(ENDIAN_CHECK) --emrun
 
 # Revision files
 
