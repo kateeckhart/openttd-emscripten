@@ -30,7 +30,7 @@ set_default() {
 	lipo=""
 	awk="awk"
 	os="DETECT"
-	endian="AUTO"
+	endian="little"
 	cpu_type="DETECT"
 	config_log="config.log"
 	prefix_dir="/usr/local"
